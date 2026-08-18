@@ -31,3 +31,5 @@ dnf5 install -y \
 #### Example for enabling a System Unit File
 
 systemctl enable podman.socket
+chmod +x /usr/libexec/fern-flatpak-preinstall
+systemctl enable flatpak-preinstall.service

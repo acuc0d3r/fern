@@ -1,0 +1,13 @@
+[Unit]
+Description=Fern Flatpak Preinstall
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=!/var/lib/fern/flatpak-preinstall.done
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/fern-flatpak-preinstall
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

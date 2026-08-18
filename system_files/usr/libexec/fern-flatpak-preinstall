@@ -1,0 +1,49 @@
+#!/bin/bash
+# Fern minimal flatpak preinstall — reads /etc/flatpak/preinstall.d/*.preinstall
+# and installs each listed app from Flathub if not already installed.
+# NOTE: uses Flatpak's own native .preinstall INI format (confirmed real
+# format this session), just providing the missing "consume it on boot"
+# piece that base-main doesn't ship.
+
+set -euo pipefail
+
+MARKER_DIR="/var/lib/fern"
+MARKER_FILE="$MARKER_DIR/flatpak-preinstall.done"
+PREINSTALL_DIR="/etc/flatpak/preinstall.d"
+
+mkdir -p "$MARKER_DIR"
+
+# Ensure flathub remote exists (system-wide)
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+if [ -d "$PREINSTALL_DIR" ]; then
+    for f in "$PREINSTALL_DIR"/*.preinstall; do
+        [ -e "$f" ] || continue
+        # Parse each [Flatpak Preinstall APP_ID] section, extract Branch
+        current_app=""
+        current_branch="stable"
+        while IFS= read -r line; do
+            case "$line" in
+                "[Flatpak Preinstall "*"]")
+                    # flush previous entry
+                    if [ -n "$current_app" ]; then
+                        echo "Installing $current_app ($current_branch)..."
+                        flatpak install -y --noninteractive --or-update flathub "$current_app" || true
+                    fi
+                    current_app=$(echo "$line" | sed -E 's/\[Flatpak Preinstall (.*)\]/\1/')
+                    current_branch="stable"
+                    ;;
+                Branch=*)
+                    current_branch="${line#Branch=}"
+                    ;;
+            esac
+        done < "$f"
+        # flush last entry in file
+        if [ -n "$current_app" ]; then
+            echo "Installing $current_app ($current_branch)..."
+            flatpak install -y --noninteractive --or-update flathub "$current_app" || true
+        fi
+    done
+fi
+
+touch "$MARKER_FILE"

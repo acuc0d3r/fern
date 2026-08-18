@@ -1,0 +1,5 @@
+[Flatpak Preinstall org.chromium.Chromium]
+Branch=stable
+
+[Flatpak Preinstall app.devsuite.Ptyxis]
+Branch=stable
