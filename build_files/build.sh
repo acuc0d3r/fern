@@ -19,7 +19,8 @@ dnf5 install -y \
 	quickshell \
 	greetd \
 	greetd-selinux \
-	nemo
+	nautilus \
+	adw-gtk3-theme
 
 # Use a COPR Example:
 #
