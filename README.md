@@ -1,4 +1,65 @@
-# image-template
+# fern
+
+## Build Configuration
+
+fern is built on `ghcr.io/ublue-os/base-main:latest` (Fedora 44) — a desktop-environment-free
+base, deliberately chosen over GNOME/KDE-based uBlue images so the custom shell isn't fighting
+an existing desktop's assumptions.
+
+### Desktop stack
+
+| Component | Choice | Notes |
+|---|---|---|
+| Compositor | [labwc](https://github.com/labwc/labwc) | Conventional stacking window model, not tiling |
+| Shell | [Quickshell](https://quickshell.org) | Custom QML-based shell (shelf, launcher, quick settings, etc.) |
+| Display manager | [greetd](https://sr.ht/~kennylevinsen/greetd/) | Minimal login daemon; greeter is a custom Quickshell app using the native `Quickshell.Services.Greetd` module |
+| Toolkit direction | GTK4 / libadwaita | Default apps use standard libadwaita styling rather than fighting it |
+
+### Default applications
+
+- **Browser:** Chromium (Flatpak, preinstalled, freely swappable)
+- **Terminal:** Ptyxis (Flatpak, preinstalled, freely swappable)
+- **File manager:** Nautilus (`dnf5`-layered — no maintained Flatpak exists for major GTK
+  file managers at time of writing)
+
+Chromium and Ptyxis are delivered via a custom `flatpak-preinstall.service` (not present in
+bare `base-main`) that reads `/etc/flatpak/preinstall.d/*.preinstall` files on first boot.
+Preinstalled apps can be freely uninstalled by the user and won't be reinstalled — nothing
+is locked in.
+
+### Installer
+
+Anaconda handles partitioning, security, and services during install. **Network, timezone,
+and user account creation are deferred to fern's first-run experience** rather than Anaconda,
+so account setup can be tied to optional provider sign-in (à la ChromeOS) instead of being a
+disconnected local-user step before it.
+
+### Commit conventions
+
+This repo follows [Conventional Commits](https://www.conventionalcommits.org/). Since fern is
+primarily OS build tooling rather than application code, `build:` is the default prefix for
+most changes:
+
+| Prefix | Use for |
+|---|---|
+| `build:` | Changes to `Containerfile`, `build_files/`, `system_files/`, `disk_config/` — the default for most commits here |
+| `ci:` | Changes to `.github/workflows/` |
+| `fix:` | Correcting something that was actively broken or wrong |
+| `feat:` | Adding a new user-facing capability that didn't exist before |
+| `chore:` | Trivial housekeeping with no functional impact (renames, comment cleanup) |
+| `refactor:` | Restructuring with no behavior change |
+| `docs:` | Documentation-only changes |
+| `revert:` | Reverting a previous commit |
+
+Example: `build: switch file manager from nemo to nautilus (avoid cinnamon-desktop bloat)`
+
+---
+
+
+
+
+
+
 
 This repository is meant to be a template for building your own custom [bootc](https://github.com/bootc-dev/bootc) image. This template is the recommended way to make customizations to any image published by the Universal Blue Project.
 
