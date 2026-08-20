@@ -23,7 +23,6 @@ dnf5 install -y \
 	adw-gtk3-theme
 
 systemctl enable greetd.service
-systemctl enable labwc-session.target
 
 # Use a COPR Example:
 #
