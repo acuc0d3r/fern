@@ -22,6 +22,9 @@ dnf5 install -y \
 	nautilus \
 	adw-gtk3-theme
 
+systemctl enable greetd.service
+systemctl enable labwc-session.target
+
 # Use a COPR Example:
 #
 # dnf5 -y copr enable ublue-os/staging
@@ -34,3 +37,7 @@ dnf5 install -y \
 systemctl enable podman.socket
 chmod +x /usr/libexec/fern-flatpak-preinstall
 systemctl enable flatpak-preinstall.service
+
+# TEMPORARY stopgap test user — remove before real release
+useradd -m -G wheel testuser
+echo "testuser:testpass" | chpasswd
