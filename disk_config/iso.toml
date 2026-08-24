@@ -18,3 +18,8 @@ disable = [
   "org.fedoraproject.Anaconda.Modules.Network",
   "org.fedoraproject.Anaconda.Modules.Timezone"
 ]
+
+[customizations.iso]
+volume_id = "FERN"
+application_id = "FERN"
+publisher = "acuc0d3r"

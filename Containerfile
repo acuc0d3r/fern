@@ -35,6 +35,13 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/log \
     --mount=type=tmpfs,dst=/tmp \
     /ctx/build.sh
+    
+RUN sed -i \
+    -e 's/^NAME=.*/NAME="Fern"/' \
+    -e 's/^PRETTY_NAME=.*/PRETTY_NAME="Fern Linux"/' \
+    -e 's/^ID=.*/ID=fern/' \
+    -e 's/^VARIANT=.*/VARIANT="Fern"/' \
+    /usr/lib/os-release
 
 ### LINTING
 ## Verify final image and contents are correct.
